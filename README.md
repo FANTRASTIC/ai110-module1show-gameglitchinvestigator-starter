@@ -1,54 +1,56 @@
 # 🎮 Game Glitch Investigator: The Impossible Guesser
 
-## 🚨 The Situation
+## Purpose
 
-You asked an AI to build a simple "Number Guessing Game" using Streamlit.
-It wrote the code, ran away, and now the game is unplayable. 
+This Streamlit number-guessing game lets a player choose a difficulty, guess
+the secret number, receive higher/lower hints, and earn a score.
 
-- You can't win.
-- The hints lie to you.
-- The secret number seems to have commitment issues.
+## Fixes
 
-## 🛠️ Setup
+- Moved range selection, guess parsing, guess comparison, and score calculation
+  into `logic_utils.py`.
+- Corrected higher/lower hints and removed the string-versus-integer comparison
+  workaround.
+- Made a new game reset its secret, score, attempts, history, and win/loss
+  status; changing difficulty starts a game in the selected range.
+- Invalid input now reports an error without using an attempt.
+
+## Setup
 
 1. Install dependencies: `pip install -r requirements.txt`
-2. Run the broken app: `python -m streamlit run app.py`
+2. Run the game: `python -m streamlit run app.py`
+3. Run the logic tests: `python -m pytest tests/test_game_logic.py -q`
 
-## 🕵️‍♂️ Your Mission
+## Bug Notes
 
-1. **Play the game.** Open the "Developer Debug Info" tab in the app to see the secret number. Try to win.
-2. **Find the State Bug.** Why does the secret number change every time you click "Submit"? Ask ChatGPT: *"How do I keep a variable from resetting in Streamlit when I click a button?"*
-3. **Fix the Logic.** The hints ("Higher/Lower") are wrong. Fix them.
-4. **Refactor & Test.** - Move the logic into `logic_utils.py`.
-   - Run `pytest` in your terminal.
-   - Keep fixing until all tests pass!
+The starter `logic_utils.py` contained `NotImplementedError` placeholders. The
+reported pytest run showed all three initial guess-comparison tests failing at
+`check_guess`. The original comparison code also paired "Too High" with "Go
+HIGHER" and "Too Low" with "Go LOWER". The original New Game button changed the
+secret and attempts but left the score/history/status unchanged and always
+selected a number from 1 to 100, regardless of difficulty.
 
-## 📝 Document Your Experience
+## Demo Walkthrough
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
-
-## 📸 Demo Walkthrough
-
-Describe your fixed game in numbered steps so a reader can follow along without watching a video:
-
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
-
-**Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
+1. Choose Normal difficulty; the game shows a range of 1 to 100.
+2. For a game whose secret is 50, enter 40; the game says "Too Low" and
+   "Go HIGHER!"
+3. Enter 60; the game says "Too High" and "Go LOWER!"
+4. Enter 50; the game reports a win and displays the final score.
+5. Select New Game; the game starts fresh with reset score, attempts, history,
+   and status. The secret remains available in Developer Debug Info for testing.
 
 ## 🧪 Test Results
 
 ```
-# Paste your pytest output here, e.g.:
-# pytest tests/
-# ========================= X passed in 0.XXs =========================
+Initial run (before adding the range and input-parsing tests):
+...                                                                    [100%]
+3 passed in 0.05s
 ```
 
-## 🚀 Stretch Features
+The expanded test file now contains seven tests. Its final result has not yet
+been captured; run the command in Setup to verify the latest changes.
 
-- [ ] [If you choose to complete Challenge 4, describe the Enhanced UI changes here — a screenshot is optional]
+## Document Your Experience
+
+The investigation and fixes are recorded in [reflection.md](./reflection.md).
